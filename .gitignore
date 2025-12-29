@@ -10,3 +10,4 @@ wheels/
 .venv
 test.py
 mytest.py
+uv.lock
