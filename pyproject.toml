@@ -1,0 +1,14 @@
+[project]
+name = "youtube-transcript-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4>=4.14.3",
+    "fastmcp>=2.14.1",
+    "selenium>=4.39.0",
+    "undetected-chromedriver>=3.5.5",
+    "webdriver-manager>=4.0.2",
+    "youtube-transcript-api>=1.2.3",
+]
