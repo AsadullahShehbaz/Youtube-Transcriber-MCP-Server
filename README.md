@@ -1,198 +1,163 @@
+# 🎬 YouTube Transcriber MCP Server
 
-# 🎥 YouTube Transcript MCP Server
+A powerful Model Context Protocol (MCP) server that fetches transcripts from YouTube videos. Perfect for students, researchers, and content creators who need quick access to video transcripts!
 
-A **beginner-friendly** Model Context Protocol (MCP) server that extracts **YouTube video transcripts** using multiple methods. Perfect for AI/ML students building RAG systems, LLM agents, or transcript analysis projects.
+## ✨ Features
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
-[![FastMCP](https://img.shields.io/badge/FastMCP-ready-green.svg)](https://github.com/jlowin/fastmcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+- 📝 Extract transcripts from any YouTube video with captions
+- 🌍 Supports multiple languages (English, German, Hindi, Urdu)
+- 🔄 Automatic fallback method if primary extraction fails
+- 🧹 Clean formatting with timestamp removal
+- ☁️ Hosted on FastMCP Cloud - no setup required!
 
-## 🚀 Features
+## 🚀 Quick Start (3 Easy Steps!)
 
-- **Primary Method**: Fast YouTube Transcript API (supports English, German, Hindi, Urdu)
-- **Fallback Method**: Selenium scraping via Tactiq.io (works when API fails)
-- **Text Cleaning**: Automatically removes timestamps
-- **Production Ready**: Headless Chrome with optimized options
-- **Easy MCP Integration**: Connects to any LLM agent or AI application
+### Step 1: Install Claude Desktop
 
-## 🛠️ Quick Start (2 Minutes)
+If you haven't already, download and install Claude Desktop from [claude.ai](https://claude.ai/download)
 
-### 1. Clone & Install
-```
-git clone <your-repo-url>
-cd youtube-transcript-mcp
-pip install -r requirements.txt
-```
+### Step 2: Configure the MCP Server
 
-### 2. Run Server
-```
-python main.py
-```
-Server starts at `http://127.0.0.1:8000`
+1. **Find your Claude configuration file:**
+   - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+   - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-### 3. Test in Browser
-Visit `http://127.0.0.1:8000` to see available tools!
+2. **Open the file** in any text editor (Notepad, TextEdit, VS Code, etc.)
 
-## 🔗 Available Tools
+3. **Add this configuration:**
 
-| Tool | Description | Input | Output |
-|------|-------------|-------|--------|
-| `get_api_transcript` | Fast API method (primary) | YouTube URL | `{"transcript": "text"}` or `{"error": "message"}` |
-| `get_tactiq_transcript` | Selenium fallback | YouTube URL | Raw transcript text |
-| `clean_transcript` | Remove timestamps | Raw transcript | Clean text |
-
-## 💻 Example Usage
-
-### With Claude Desktop / Cursor
-1. Add to your MCP config:
-```
-http://127.0.0.1:8000
+```json
+{
+  "mcpServers": {
+    "youtube-transcriber": {
+      "url": "https://youtubetranscriber.fastmcp.app/mcp"
+    }
+  }
+}
 ```
 
-2. Ask your AI:
+**Note**: If you already have other MCP servers configured, just add the `"youtube-transcriber"` section inside the existing `"mcpServers"` object.
+
+### Step 3: Restart Claude Desktop
+
+Close Claude Desktop completely and reopen it. You're done! 🎉
+
+## 🎯 How to Use
+
+Once configured, simply chat with Claude and ask it to transcribe YouTube videos. Here are some examples:
+
+### Example 1: Get a Transcript
 ```
-"Get the transcript for this video and summarize it: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-```
-
-### Python Client Example
-```
-from mcp.client import MCPClient
-
-client = MCPClient("http://127.0.0.1:8000")
-result = client.call_tool("get_api_transcript", {"url": "https://youtube.com/watch?v=VIDEO_ID"})
-print(result["transcript"])
-```
-
-## 📦 Installation
-
-### Local Development
-```
-# Clone repo
-git clone <repo-url>
-cd youtube-transcript-mcp
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
+Can you get the transcript of this YouTube video?
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
 ```
 
-### Production (Docker) - Coming Soon!
-
-## 🗄️ Requirements File
+### Example 2: Summarize a Video
 ```
-fastmcp>=0.1.0
-selenium>=4.15.0
-webdriver-manager>=4.0.0
-youtube-transcript-api>=0.6.1
-beautifulsoup4>=4.12.0
-requests>=2.31.0
+Please transcribe this video and give me a summary:
+https://www.youtube.com/watch?v=VIDEO_ID
 ```
 
-**Note**: Chrome browser auto-installs via `webdriver-manager`
-
-## ⚙️ Configuration
-
-### Environment Variables
+### Example 3: Extract Key Points
 ```
-# Optional: Custom host/port
-MCP_HOST=0.0.0.0
-MCP_PORT=8001
-
-# Run with custom config
-MCP_HOST=0.0.0.0 MCP_PORT=8001 python main.py
+Get the transcript from this tutorial and list the main steps:
+https://www.youtube.com/watch?v=VIDEO_ID
 ```
 
-### Chrome Options (Already Optimized)
-- ✅ Headless mode
-- ✅ No sandbox (Docker-friendly)
-- ✅ Anti-detection user agent
-- ✅ Muted audio
-- ✅ Optimized memory/performance
-
-## 🧪 Testing Your Server
-
-### 1. Health Check
+### Example 4: Clean Transcript
 ```
-curl http://127.0.0.1:8000/health
+Fetch the transcript and remove all timestamps:
+https://www.youtube.com/watch?v=VIDEO_ID
 ```
 
-### 2. List Tools
-```
-curl http://127.0.0.1:8000/tools
-```
+## 🛠️ Available Tools
 
-### 3. Test Transcript
-```
-curl -X POST http://127.0.0.1:8000/call \
-  -H "Content-Type: application/json" \
-  -d '{"tool": "get_api_transcript", "arguments": {"url": "https://youtube.com/watch?v=dQw4w9WgXcQ"}}'
-```
+The server provides three powerful tools that Claude can use automatically:
 
-## 🎯 Use Cases for CS Students
+### 1. `get_api_transcript`
+- **Primary method** for fetching transcripts
+- Fast and reliable
+- Works with videos that have official captions
 
-1. **RAG Pipeline**: Feed transcripts to your LangChain/VectorDB
-2. **Video Summarization**: LLM + Transcript = Instant summaries
-3. **Multilingual Analysis**: Supports 4+ languages
-4. **Portfolio Project**: Production-grade MCP server
-5. **Agentic Workflow**: Multi-tool transcript pipeline
+### 2. `get_tactiq_transcript`
+- **Fallback method** when the API fails
+- Scrapes transcript from Tactiq.io
+- Slower but more comprehensive
 
-## 🚀 Example Workflow
+### 3. `clean_transcript`
+- Removes timestamps from raw transcript text
+- Makes the output cleaner and easier to read
 
-```
-YouTube URL → get_api_transcript() → [Success?] → clean_transcript()
-                        ↓ No
-                 get_tactiq_transcript() → clean_transcript()
-                        ↓
-                   ✅ Clean Transcript Ready!
-```
+## 📋 Requirements
 
-## 🔍 Troubleshooting
+**For Users**: 
+- Claude Desktop app (that's it!)
 
-| Issue | Solution |
-|-------|----------|
-| `Chrome not found` | `webdriver-manager` auto-downloads |
-| `Port 8000 busy` | `MCP_PORT=8001 python main.py` |
-| `No captions` | Falls back to Tactiq automatically |
-| `Selenium timeout` | Video might need manual captions enabled |
-| `Permission denied` | Add `--no-sandbox` (already included) |
+**For Developers** (if running locally):
+- Python 3.8+
+- Dependencies: `fastmcp`, `selenium`, `youtube-transcript-api`, `beautifulsoup4`, `webdriver-manager`
 
-## 📱 Deploy Anywhere
+## ❓ Troubleshooting
 
-### Railway/Render
-```
-# Just set PORT env var
-PORT=10000 python main.py
-```
+### Server Not Working?
 
-### Google Colab
-```
-!pip install -r requirements.txt
-!python main.py &
-# Access via ngrok
-```
+1. **Check Configuration**: Make sure your `claude_desktop_config.json` is properly formatted (valid JSON)
+2. **Restart Claude**: Always restart Claude Desktop after making config changes
+3. **Test with a Popular Video**: Try a well-known video with confirmed captions first
+4. **Check Video Has Captions**: Not all videos have transcripts available
+
+### Common Issues
+
+**"No captions available"**
+- The video doesn't have captions enabled
+- Try another video or ask the creator to enable captions
+
+**Server appears disconnected**
+- Check your internet connection
+- Verify the URL is exactly: `https://youtubetranscriber.fastmcp.app/mcp`
+- Restart Claude Desktop
+
+**Transcript looks messy**
+- Ask Claude to "clean the transcript and remove timestamps"
+- The `clean_transcript` tool will format it nicely
+
+## 🎓 Use Cases
+
+Perfect for:
+- 📚 **Students**: Transcribe lectures and study videos
+- 🔬 **Researchers**: Extract information from video content
+- ✍️ **Content Creators**: Get transcripts for subtitles or blog posts
+- 🌐 **Translators**: Work with video content in multiple languages
+- ♿ **Accessibility**: Make video content available as text
+
+## 🔒 Privacy & Limits
+
+- This server doesn't store any transcripts
+- All processing happens in real-time
+- Respects YouTube's terms of service
+- Only works with publicly available videos that have captions
+
+## 💡 Pro Tips
+
+1. **Be Specific**: Tell Claude exactly what you want (summary, key points, full transcript, etc.)
+2. **Multiple Languages**: The server supports English, German, Hindi, and Urdu - just ask!
+3. **Combine with Analysis**: After getting a transcript, ask Claude to analyze, summarize, or answer questions about it
+4. **Batch Processing**: You can ask Claude to transcribe multiple videos in one conversation
 
 ## 🤝 Contributing
 
-1. Fork repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing-feature`)
-5. Open Pull Request
+Found a bug or have a suggestion? Feel free to open an issue on the repository!
 
 ## 📄 License
-MIT License - Use freely in your projects!
 
-## 👨‍💻 Author
-**Asadullah Shehbaz** - CS Student | AI/ML Enthusiast | 8th Semester BSCS
+This project is provided as-is for educational and personal use.
 
-## 🌟 Star & Share
-Help other students! ⭐ **Star this repo** and share with your batchmates.
+## 🌟 Support
+
+If you find this useful, give it a star ⭐ and share it with others who might benefit!
 
 ---
 
-**Built with ❤️ for CS students building their first production MCP server**
+**Happy Transcribing! 🎉**
 
+Need help? Just ask Claude - it knows how to use this server!
